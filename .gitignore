@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .direnv/
+.jampack/
 *.tsbuildinfo
 .DS_Store
 .vercel

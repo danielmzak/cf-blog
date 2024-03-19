@@ -1,15 +1,5 @@
 declare module 'astro:content' {
 	interface Render {
-		'.mdx': Promise<{
-			Content: import('astro').MarkdownInstance<{}>['Content'];
-			headings: import('astro').MarkdownHeading[];
-			remarkPluginFrontmatter: Record<string, any>;
-		}>;
-	}
-}
-
-declare module 'astro:content' {
-	interface Render {
 		'.md': Promise<{
 			Content: import('astro').MarkdownInstance<{}>['Content'];
 			headings: import('astro').MarkdownHeading[];
@@ -19,6 +9,8 @@ declare module 'astro:content' {
 }
 
 declare module 'astro:content' {
+	export { z } from 'astro/zod';
+
 	type Flatten<T> = T extends { [K: string]: infer U } ? U : never;
 
 	export type CollectionKey = keyof AnyEntryMap;
@@ -26,6 +18,53 @@ declare module 'astro:content' {
 
 	export type ContentCollectionKey = keyof ContentEntryMap;
 	export type DataCollectionKey = keyof DataEntryMap;
+
+	// This needs to be in sync with ImageMetadata
+	export type ImageFunction = () => import('astro/zod').ZodObject<{
+		src: import('astro/zod').ZodString;
+		width: import('astro/zod').ZodNumber;
+		height: import('astro/zod').ZodNumber;
+		format: import('astro/zod').ZodUnion<
+			[
+				import('astro/zod').ZodLiteral<'png'>,
+				import('astro/zod').ZodLiteral<'jpg'>,
+				import('astro/zod').ZodLiteral<'jpeg'>,
+				import('astro/zod').ZodLiteral<'tiff'>,
+				import('astro/zod').ZodLiteral<'webp'>,
+				import('astro/zod').ZodLiteral<'gif'>,
+				import('astro/zod').ZodLiteral<'svg'>,
+				import('astro/zod').ZodLiteral<'avif'>,
+			]
+		>;
+	}>;
+
+	type BaseSchemaWithoutEffects =
+		| import('astro/zod').AnyZodObject
+		| import('astro/zod').ZodUnion<[BaseSchemaWithoutEffects, ...BaseSchemaWithoutEffects[]]>
+		| import('astro/zod').ZodDiscriminatedUnion<string, import('astro/zod').AnyZodObject[]>
+		| import('astro/zod').ZodIntersection<BaseSchemaWithoutEffects, BaseSchemaWithoutEffects>;
+
+	type BaseSchema =
+		| BaseSchemaWithoutEffects
+		| import('astro/zod').ZodEffects<BaseSchemaWithoutEffects>;
+
+	export type SchemaContext = { image: ImageFunction };
+
+	type DataCollectionConfig<S extends BaseSchema> = {
+		type: 'data';
+		schema?: S | ((context: SchemaContext) => S);
+	};
+
+	type ContentCollectionConfig<S extends BaseSchema> = {
+		type?: 'content';
+		schema?: S | ((context: SchemaContext) => S);
+	};
+
+	type CollectionConfig<S> = ContentCollectionConfig<S> | DataCollectionConfig<S>;
+
+	export function defineCollection<S extends BaseSchema>(
+		input: CollectionConfig<S>
+	): CollectionConfig<S>;
 
 	type AllValuesOf<T> = T extends any ? T[keyof T] : never;
 	type ValidContentEntrySlug<C extends keyof ContentEntryMap> = AllValuesOf<
@@ -136,41 +175,125 @@ declare module 'astro:content' {
 
 	type ContentEntryMap = {
 		"blog": {
-"first-post.md": {
-	id: "first-post.md";
-  slug: "first-post";
+"adding-new-post.md": {
+	id: "adding-new-post.md";
+  slug: "adding-new-posts-in-astropaper-theme";
   body: string;
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
-"markdown-style-guide.md": {
-	id: "markdown-style-guide.md";
-  slug: "markdown-style-guide";
+"astro-paper-2.md": {
+	id: "astro-paper-2.md";
+  slug: "astro-paper-2";
   body: string;
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
-"second-post.md": {
-	id: "second-post.md";
-  slug: "second-post";
+"astro-paper-3.md": {
+	id: "astro-paper-3.md";
+  slug: "astro-paper-v3";
   body: string;
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
-"third-post.md": {
-	id: "third-post.md";
-  slug: "third-post";
+"astro-paper-4.md": {
+	id: "astro-paper-4.md";
+  slug: "astro-paper-v4";
   body: string;
   collection: "blog";
   data: InferEntrySchema<"blog">
 } & { render(): Render[".md"] };
-"using-mdx.mdx": {
-	id: "using-mdx.mdx";
-  slug: "using-mdx";
+"customizing-astropaper-theme-color-schemes.md": {
+	id: "customizing-astropaper-theme-color-schemes.md";
+  slug: "customizing-astropaper-theme-color-schemes";
   body: string;
   collection: "blog";
   data: InferEntrySchema<"blog">
-} & { render(): Render[".mdx"] };
+} & { render(): Render[".md"] };
+"dynamic-og-images.md": {
+	id: "dynamic-og-images.md";
+  slug: "dynamic-og-image-generation-in-astropaper-blog-posts";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"example-draft-post.md": {
+	id: "example-draft-post.md";
+  slug: "example-draft-post";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"how-to-add-a-new-social-icon.md": {
+	id: "how-to-add-a-new-social-icon.md";
+  slug: "how-to-add-a-new-social-icon";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"how-to-add-an-estimated-reading-time.md": {
+	id: "how-to-add-an-estimated-reading-time.md";
+  slug: "how-to-add-estimated-reading-time";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"how-to-configure-astropaper-theme.md": {
+	id: "how-to-configure-astropaper-theme.md";
+  slug: "how-to-configure-astropaper-theme";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"how-to-connect-astro-paper-blog-with-forestry-cms.md": {
+	id: "how-to-connect-astro-paper-blog-with-forestry-cms.md";
+  slug: "how-to-connect-astro-paper-blog-with-forestry-cms";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"how-to-update-dependencies.md": {
+	id: "how-to-update-dependencies.md";
+  slug: "how-to-update-dependencies";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"portfolio-website-development.md": {
+	id: "portfolio-website-development.md";
+  slug: "how-do-i-develop-my-portfolio-and-blog";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"predefined-color-schemes.md": {
+	id: "predefined-color-schemes.md";
+  slug: "predefined-color-schemes";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"setting-dates-via-git-hooks.md": {
+	id: "setting-dates-via-git-hooks.md";
+  slug: "setting-dates-via-git-hooks";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"tailwind-typography.md": {
+	id: "tailwind-typography.md";
+  slug: "tailwind-typography";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
+"terminal-development.md": {
+	id: "terminal-development.md";
+  slug: "how-do-i-develop-my-terminal-portfolio-website-with-react";
+  body: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">
+} & { render(): Render[".md"] };
 };
 
 	};
@@ -181,5 +304,5 @@ declare module 'astro:content' {
 
 	type AnyEntryMap = ContentEntryMap & DataEntryMap;
 
-	export type ContentConfig = typeof import("../src/content/config.js");
+	type ContentConfig = typeof import("../src/content/config");
 }
