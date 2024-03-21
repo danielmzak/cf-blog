@@ -298,7 +298,7 @@ declare module 'astro:content' {
 "blog": {
 "ddns-cloudflare-ddclient.md": {
 	id: "ddns-cloudflare-ddclient.md";
-  slug: "cloudflare";
+  slug: "ddns-with-cloudflare-and-cloudflare-ddns";
   body: string;
   collection: "blog";
   data: InferEntrySchema<"blog">

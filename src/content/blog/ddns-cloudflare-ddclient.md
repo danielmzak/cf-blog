@@ -2,7 +2,7 @@
 author: dmz
 pubDatetime: 2024-03-21T03:00:00.737Z
 title: DDNS with cloudflare and cloudflare-ddns
-slug: cloudflare
+slug: ddns-with-cloudflare-and-cloudflare-ddns
 featured: false
 tags:
   - DDNS
