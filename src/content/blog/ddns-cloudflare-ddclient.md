@@ -9,7 +9,7 @@ tags:
   - cloudflare
   - cloudflare-ddns
   - ddclient
-description: How to setup DDNS with cloudflaren and cloudflare-ddns
+description: How to setup DDNS with cloudflare and cloudflare-ddns
 ---
 
 **1. Installation**
