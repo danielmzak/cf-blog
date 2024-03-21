@@ -54,11 +54,14 @@ description: DDNS with cloudflare and cloudflare-ddns
   - On overview page find `Zone ID` and copy it
 
 **4. Configuration of cloudflare-ddns**
+
   ```
   cd ~/cloudflare-ddns
   cp config-example.json config.json
   ```
+
   - edit `config.json`:
+
   ```
   {
     "cloudflare": [
@@ -89,7 +92,9 @@ description: DDNS with cloudflare and cloudflare-ddns
     "ttl": 300
   }
   ```
+
   my `config.json`:
+
   ```
   {
     "cloudflare": [
